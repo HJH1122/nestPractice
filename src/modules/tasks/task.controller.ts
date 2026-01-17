@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto, UpdateTaskDto } from './dto';
+import { TaskEntity } from './entities/task.entity';
 
 
 @Controller('tasks')
@@ -9,13 +10,13 @@ export class TaskController {
     constructor(private readonly taskService: TaskService){}
 
     @Get()
-    findAll(){
-        this.taskService.getTasks();
+    async findAll(): Promise<TaskEntity[]>{
+        return await this.taskService.getTasks();
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number){
-        this.taskService.getTask(id);
+    async findOne(@Param('id', ParseIntPipe) id: number): Promise<TaskEntity>{
+        return await this.taskService.getTask(id);
     }
 
     @Post()
