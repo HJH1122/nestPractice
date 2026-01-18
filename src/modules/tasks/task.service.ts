@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto, UpdateTaskDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskEntity } from './entities/task.entity';
@@ -30,10 +30,43 @@ export class TaskService {
         return task;
     }
 
-    createTask(payload: CreateTaskDto){}
+    async createTask(payload: CreateTaskDto){
 
-    updateTask(id: number, payload: UpdateTaskDto){}
+        const newTask = this.taskRepository.create(payload);
 
-    removeTask(id: number){}
+        await this.taskRepository.save(newTask);
+
+        return {
+            message: "테스크를 생성하였습니다.",
+            statusCode: HttpStatus.CREATED,
+        }
+
+    }
+
+    async updateTask(id: number, payload: UpdateTaskDto): Promise<TaskEntity>{
+
+        const task = await this.getTask(id);
+
+        Object.assign(task, payload);
+
+        return await this.taskRepository.save(task);
+    }
+
+    async removeTask(id: number){
+        const task = await this.taskRepository.findOne({where : {id}});
+
+        if(!task){
+            throw new NotFoundException(`${id}의 테스크를 찾을 수 없습니다.`)
+        }
+        
+        await this.taskRepository.delete(id);
+
+        return {
+            message: '테스크를 삭제하였습니다.',
+            statusCode: HttpStatus.NO_CONTENT,
+        }
+
+        
+    }
 
 }

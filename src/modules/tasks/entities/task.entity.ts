@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { CreateTaskDto } from "../dto";
 
 @Entity("tasks")
 export class TaskEntity {
@@ -17,5 +18,11 @@ export class TaskEntity {
 
     @Column()
     thumbnail: string;
+
+    @CreateDateColumn({name: 'created_at'})
+    createdAt: Date;
+
+    @CreateDateColumn({name: 'updated_at'})
+    updatedAt: Date;
 
 }

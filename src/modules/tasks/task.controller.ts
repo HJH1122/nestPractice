@@ -10,30 +10,30 @@ export class TaskController {
     constructor(private readonly taskService: TaskService){}
 
     @Get()
-    async findAll(): Promise<TaskEntity[]>{
-        return await this.taskService.getTasks();
+    findAll(): Promise<TaskEntity[]>{
+        return this.taskService.getTasks();
     }
 
     @Get(':id')
-    async findOne(@Param('id', ParseIntPipe) id: number): Promise<TaskEntity>{
-        return await this.taskService.getTask(id);
+    findOne(@Param('id', ParseIntPipe) id: number): Promise<TaskEntity>{
+        return this.taskService.getTask(id);
     }
 
     @Post()
     @UsePipes(new ValidationPipe())
     create(@Body() body: CreateTaskDto){
-        this.taskService.createTask(body);
+        return this.taskService.createTask(body);
     }
 
     @Patch(':id')
     @UsePipes(new ValidationPipe())
-    update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateTaskDto){
-        this.taskService.updateTask(id, body);
+    update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateTaskDto): Promise<TaskEntity>{
+        return this.taskService.updateTask(id, body);
     }
 
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number){
-        this.taskService.removeTask(id);
+        return this.taskService.removeTask(id);
     }
 
 }
